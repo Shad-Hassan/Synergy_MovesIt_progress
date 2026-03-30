@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Project Status — Launch Readiness</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #2a2a38;
+    --green: #00e87a;
+    --yellow: #f5c400;
+    --red: #ff4757;
+    --blue: #4f8aff;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79, 138, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79, 138, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* HEADER */
+  .header {
+    margin-bottom: 64px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .header-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--blue);
+  }
+
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(42px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--green);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  /* NAV PILLS */
+  .nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .nav-pill {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: none;
+    text-decoration: none;
+  }
+
+  .nav-pill:hover, .nav-pill.active {
+    border-color: var(--blue);
+    color: var(--blue);
+    background: rgba(79, 138, 255, 0.08);
+  }
+
+  /* SECTION TITLES */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* BIG STATUS BANNER */
+  .status-banner {
+    background: linear-gradient(135deg, rgba(0,232,122,0.08) 0%, rgba(0,232,122,0.02) 100%);
+    border: 1px solid rgba(0,232,122,0.25);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    animation: fadeUp 0.6s 0.15s ease both;
+  }
+
+  .status-dot-big {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    box-shadow: 0 0 24px rgba(0,232,122,0.5);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 24px rgba(0,232,122,0.5); }
+    50% { box-shadow: 0 0 40px rgba(0,232,122,0.8); }
+  }
+
+  .status-banner-text h2 {
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+
+  .status-banner-text p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* GRID LAYOUTS */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 48px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .card:hover {
+    border-color: #3a3a50;
+    transform: translateY(-2px);
+  }
+
+  .card-icon {
+    font-size: 22px;
+    margin-bottom: 14px;
+  }
+
+  .card-title {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-top: 14px;
+    font-weight: 500;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .badge-green { background: rgba(0,232,122,0.1); color: var(--green); }
+  .badge-green::before { background: var(--green); }
+
+  .badge-yellow { background: rgba(245,196,0,0.1); color: var(--yellow); }
+  .badge-yellow::before { background: var(--yellow); }
+
+  .badge-blue { background: rgba(79,138,255,0.1); color: var(--blue); }
+  .badge-blue::before { background: var(--blue); }
+
+  /* STATUS TABLE */
+  .status-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 48px;
+    font-size: 12px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .status-table th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .status-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(42,42,56,0.5);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  .status-table tr:last-child td { border-bottom: none; }
+
+  .status-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tick { color: var(--green); font-size: 16px; }
+  .warn { color: var(--yellow); font-size: 14px; }
+
+  /* GAPS SECTION */
+  .gap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .gap-card:hover { border-color: #3a3a50; }
+
+  .gap-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .gap-priority {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .priority-yellow { background: rgba(245,196,0,0.12); color: var(--yellow); border: 1px solid rgba(245,196,0,0.2); }
+
+  .gap-title {
+    font-family: var(--font-head);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .gap-effort {
+    font-size: 10px;
+    color: var(--muted);
+    flex-shrink: 0;
+    padding-top: 3px;
+  }
+
+  .gap-body {
+    padding: 0 24px 22px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+
+  .gap-body strong { color: var(--text); }
+
+  /* CHECKLIST */
+  .checklist {
+    list-style: none;
+    margin-bottom: 48px;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,42,56,0.6);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* COMPARE STEPS */
+  .step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .step-item:hover {
+    border-color: #3a3a50;
+    transform: translateX(4px);
+  }
+
+  .step-num {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--border);
+    width: 40px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .step-content { flex: 1; }
+
+  .step-title {
+    font-family: var(--font-head);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .step-time {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* SECTION ANIMATION */
+  .section {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .section:nth-child(2) { animation-delay: 0.1s; }
+  .section:nth-child(3) { animation-delay: 0.2s; }
+  .section:nth-child(4) { animation-delay: 0.3s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    width: fit-content;
+  }
+
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 22px;
+    border-radius: 9px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .container { padding: 40px 16px 80px; }
+    .status-banner { flex-direction: column; }
+    .tabs { width: 100%; }
+    .tab { flex: 1; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-eyebrow">Project Status · Updated Mar 30 2026</div>
+    <h1>Are we<br/><span>launch ready?</span></h1>
+    <p class="header-sub">A plain-english overview of what's done, what's left, and what you need to do before flipping the switch. No jargon, we promise.</p>
+  </div>
+
+  <!-- STATUS BANNER -->
+  <div class="status-banner">
+    <div class="status-dot-big"></div>
+    <div class="status-banner-text">
+      <h2>✅ Core checkout is production-ready. You can sell today.</h2>
+      <p>Add to cart, payment, discount codes, gift cards — all working. The remaining items are nice polishes, not blockers. Compare feature needs a bit more work before it's live.</p>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('checkout')">🛒 Checkout</button>
+    <button class="tab" onclick="switchTab('compare')">⚖️ Compare</button>
+  </div>
+
+  <!-- ========== TAB: CHECKOUT ========== -->
+  <div id="tab-checkout" class="tab-panel active">
+
+    <!-- WHAT'S WORKING -->
+    <div class="section">
+      <div class="section-label">What's already working</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🛒</div>
+          <div class="card-title">Add to Cart</div>
+          <div class="card-desc">Works from product pages, sliders, and collection grids. Instant feedback, no page reload.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">Cart Drawer</div>
+          <div class="card-desc">Smooth animated slide-in panel. Close by clicking outside, pressing ESC, or the X button.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎛️</div>
+          <div class="card-title">Variant Picker</div>
+          <div class="card-desc">Colour swatches, size selection. Unavailable combos automatically greyed out.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <div class="card-title">Discount Codes</div>
+          <div class="card-desc">Add or remove promo codes and gift cards directly in the cart summary.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💳</div>
+          <div class="card-title">Checkout</div>
+          <div class="card-desc">Hands off to Shopify's secure hosted checkout. Tax, shipping & payment all handled there.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📦</div>
+          <div class="card-title">Order History</div>
+          <div class="card-desc">Logged-in customers can view all their past orders. Orders also sync to CRM automatically.</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAPS -->
+    <div class="section">
+      <div class="section-label">Nice-to-haves (not blockers)</div>
+
+      <div class="gap-card">
+        <div class="gap-header">
+          <span class="gap-priority priority-yellow">Nice to have</span>
+          <div class="gap-title">Custom Thank-You Page</div>
+          <div class="gap-effort">⏱ Medium effort</div>
+        </div>
+        <div class="gap-body">
+          Right now after payment, customers land on Shopify's default confirmation screen. We're missing a chance to show our branding, offer an upsell, or leave a good impression. <strong>Not a blocker</strong> — Shopify's default page still confirms the order fine.
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-header">
+          <span class="gap-priority priority-yellow">Nice to have</span>
+          <div class="gap-title">Branded Order Confirmation Email</div>
+          <div class="gap-effort">⏱ Low effort</div>
+        </div>
+        <div class="gap-body">
+          Shopify sends its own plain email after purchase. We could replace this with a branded template via our CRM (the webhook that fires on every order is already set up — it just needs an email automation attached to it).
+        </div>
+      </div>
+
+      <div class="gap-card">
+        <div class="gap-header">
+          <span class="gap-priority priority-yellow">Nice to have</span>
+          <div class="gap-title">Live Order Tracking</div>
+          <div class="gap-effort">⏱ Low effort</div>
+        </div>
+        <div class="gap-body">
+          Customers can see order history but not a live "your order is packed / shipped / out for delivery" status. The data is already there — it just needs to be surfaced more clearly on the order detail page.
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPLOYMENT CHECKLIST -->
+    <div class="section">
+      <div class="section-label">Go-live checklist (Shopify Admin settings, no code)</div>
+      <ul class="checklist">
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shopify Payments activated</strong> — bank account connected and verified in Shopify Admin</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shipping zones & rates</strong> — configured for all regions you're selling to</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Tax settings</strong> — correct for your region (Bangladesh / international)</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Production environment variables</strong> — store domain and access tokens set on the server</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Webhook registered</strong> — order sync to CRM pointed at the live domain</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Custom domain live</strong> — pointed to deployment and SSL active</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Test purchase</strong> — place a real test order end-to-end before announcing launch</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ========== TAB: COMPARE ========== -->
+  <div id="tab-compare" class="tab-panel">
+
+    <!-- STATUS GRID -->
+    <div class="section">
+      <div class="section-label">What's already built</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon">💾</div>
+          <div class="card-title">Compare Store</div>
+          <div class="card-desc">The logic to add/remove products from a compare list (max 3) is fully working in the background.</div>
+          <div class="badge badge-green">Done</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Compare Bar</div>
+          <div class="card-desc">The floating bar at the bottom of the screen that shows selected products — fully built and animated.</div>
+          <div class="badge badge-green">Done</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🃏</div>
+          <div class="card-title">Toggle on Product Cards</div>
+          <div class="card-desc">The "Add to Compare" button on collection grid cards is wired up and working.</div>
+          <div class="badge badge-green">Done</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎠</div>
+          <div class="card-title">Slider Compare Button</div>
+          <div class="card-desc">The button exists in the product slider — it just needs 10 minutes of wiring to actually work.</div>
+          <div class="badge badge-yellow">Almost</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT'S LEFT -->
+    <div class="section">
+      <div class="section-label">What's left — in order of priority</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Wire up the slider button</div>
+            <div class="step-desc">The button renders but doesn't do anything yet. Connecting it to the compare store is straightforward.</div>
+          </div>
+          <div class="step-time">~10 min</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Remember selections on page refresh</div>
+            <div class="step-desc">Right now, if you navigate away, your compare list disappears. We need to save it to the browser.</div>
+          </div>
+          <div class="step-time">~20 min</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Build the /compare page (route)</div>
+            <div class="step-desc">The compare bar already links to a page — it just 404s right now. This page needs to be created.</div>
+          </div>
+          <div class="step-time">~1 hr</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">Build the side-by-side comparison table</div>
+            <div class="step-desc">The actual UI showing products as columns — image, price, specs, availability, and an Add to Cart button per column.</div>
+          </div>
+          <div class="step-time">~3–5 hrs</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">05</div>
+          <div class="step-content">
+            <div class="step-title">Add vendor & description to product data</div>
+            <div class="step-desc">Minor data fetch expansion to show brand and description in the compare table.</div>
+          </div>
+          <div class="step-time">~30 min</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">06</div>
+          <div class="step-content">
+            <div class="step-title">Rich specs via Shopify metafields (optional)</div>
+            <div class="step-desc">Capacity, weight, warranty — these require setting up custom fields in Shopify Admin first, then fetching them.</div>
+          </div>
+          <div class="step-time">Varies</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOTAL ESTIMATE -->
+    <div class="status-banner" style="border-color: rgba(79,138,255,0.25); background: linear-gradient(135deg, rgba(79,138,255,0.08) 0%, rgba(79,138,255,0.02) 100%);">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--blue);flex-shrink:0;box-shadow:0 0 24px rgba(79,138,255,0.5);display:flex;align-items:center;justify-content:center;font-size:22px;">⚡</div>
+      <div class="status-banner-text">
+        <h2 style="color:var(--blue);">~6–8 hrs to a fully working compare feature</h2>
+        <p>Steps 1–3 (~1.5 hrs) make it functional. Steps 4–5 (~4–5 hrs) make it polished. Metafields are optional and depend on how detailed the specs need to be.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Last updated 30 Mar 2026</span>
+    <span style="color: var(--border)">——</span>
+    <span>Questions? Ask the dev team.</span>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
