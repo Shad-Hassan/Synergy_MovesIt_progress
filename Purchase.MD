@@ -1,104 +1,75 @@
 ---
-title: Purchase & Checkout — Deployment Readiness
-updated: 2026-03-30
+title: Purchase & Checkout — March 31  Early Day status
+updated: 2026-03-31
 ---
 
-# Purchase & Checkout — What's Left Before You Can Sell
+# Purchase & Checkout — Honest Status
 
-## TL;DR
+## Cart & Checkout: ✅ Fully Working
 
-The core purchase flow is **production-ready**. Add to cart, cart drawer, variant selection, discount codes, and Shopify-hosted checkout all work. There are three gaps that are nice-to-have but not blockers for launch.
+The entire purchase flow — add to cart through to Shopify checkout — is implemented and functional end-to-end.
 
----
+### What actually works
 
-## What's Working Right Now
-
-| Area | Status | Notes |
-|------|--------|-------|
-| Add to Cart | ✅ | Works from product pages, AppleSlider, and collection cards |
-| Cart Drawer | ✅ | GSAP-animated, opens on add, closable via backdrop/X/ESC |
-| Variant Selection | ✅ | Swatch UI, URL-persisted, disables unavailable combos |
-| Cart CRUD | ✅ | Add, update qty, remove — all with optimistic updates |
-| Discount Codes | ✅ | Add & remove in cart summary |
-| Gift Cards | ✅ | Add & remove in cart summary |
-| Checkout Redirect | ✅ | `cart.checkoutUrl` → Shopify hosted checkout |
-| Quick Cart URL | ✅ | `/cart/variantId:qty?discount=CODE` deep-link works |
-| Order History | ✅ | Logged-in customers can view past orders |
-| Webhook → CRM | ✅ | Orders sync to GoHighLevel on creation |
-
----
-
-## Gaps — Grouped by Priority
-
-### 🟡 Nice-to-Have Before Launch
-
-#### 1. Custom Thank-You / Order Confirmation Page
-**What's missing:** After Shopify processes payment, users are redirected back but there's no custom confirmation page on this domain. Shopify handles its own post-purchase screen.
-
-**Why it matters:** You lose the opportunity for upsells, brand reinforcement, and customer trust signals after purchase.
-
-**Files to create:**
-- `app/routes/($locale).orders.confirmation.tsx` — or configure Shopify admin to redirect to a custom URL post-purchase
-
-**Effort:** Medium — requires Shopify checkout settings + a new route.
+| Feature | Component | Status |
+|---------|-----------|--------|
+| Add to Cart (product page) | `ProductForm.tsx` + `AddToCartButton` | ✅ Works |
+| Add to Cart (collection cards) | `ProductItem.tsx` | ✅ Works |
+| Add to Cart (AppleSlider) | `AppleSlider.tsx` → `AddToCartCTA` | ✅ Works |
+| Cart drawer open/close | `PageLayout.tsx` + GSAP animations | ✅ Works |
+| Cart items display (image, title, price, options) | `CartLineItem.tsx` | ✅ Works |
+| Quantity +/− controls | `CartLineItem.tsx` | ✅ Works |
+| Remove line item | `CartLineItem.tsx` | ✅ Works |
+| Optimistic updates | `useOptimisticCart()` | ✅ Works |
+| Discount code apply/remove | `CartSummary.tsx` | ✅ Works |
+| Gift card apply/remove | `CartSummary.tsx` | ✅ Works |
+| Cart subtotal display | `CartSummary.tsx` | ✅ Works |
+| Checkout redirect | `cart.checkoutUrl` → Shopify hosted | ✅ Works |
+| Cart page (`/cart`) | `($locale).cart.tsx` | ✅ Works |
+| All cart mutations (add/update/remove) | `($locale).cart.tsx` action handler | ✅ Works |
+| Order history (logged-in) | `account.orders._index.tsx` | ✅ Works — Shopify Kit, not custom |
 
 ---
 
-#### 2. Post-Purchase Order Confirmation Email
-**What's missing:** Shopify sends its default transactional email. There are no custom branded templates.
+## What is NOT done
 
-**Why it matters:** Default Shopify emails are plain and generic. A branded email reinforces trust.
+### ❌ Custom thank-you / order confirmation page
+After Shopify processes payment, the user lands on **Shopify's own post-purchase screen**. There is no custom page on this domain. This is an acceptable gap for launch — Shopify handles it — but means zero branding control after checkout.
 
-**What exists:** `app/routes/webhooks.orders.create.tsx` already receives the order webhook and syncs to GHL — you could trigger a GHL email automation from there.
+**To fix:** Configure Shopify Admin → Settings → Checkout → Post-purchase to redirect to a custom route, then build `app/routes/($locale).orders.confirmation.tsx`.
 
-**Effort:** Low if using GHL automations (the webhook already fires). Medium if building custom email templates.
+### ❌ Branded order confirmation email
+Shopify sends its default transactional email. There are no custom templates.
 
----
+**To fix:** `app/routes/webhooks.orders.create.tsx` already receives the `orders/create` webhook and syncs to GoHighLevel. A GHL email automation could be triggered from there — low effort if you already use GHL for email.
 
-#### 3. Real-Time Order Status / Tracking
-**What's missing:** No order tracking page for unfulfilled orders. Customers can see order history but not live fulfillment status.
-
-**What exists:** `app/routes/($locale).account.orders._index.tsx` and `($locale).account.orders.$id.tsx` show past orders with financial and fulfillment status.
-
-**Effort:** Low — Shopify's fulfillment status is already in the order query. Just surface it more prominently in the order detail page.
+### ⚠️ Shopify Kit UI (account, addresses, login) — not styled
+The customer account routes (`account.*`) are Shopify Kit scaffolding. They work but use plain Shopify Kit markup — not styled to match the dark design system. Kept as pending because they ship with Hydrogen and aren't broken, just unstyled.
 
 ---
 
-### 🔴 Not a Blocker — Already Handled by Shopify
+## Pre-launch checklist (Shopify Admin, not code)
 
-- **Payment processing** — Shopify Payments handles everything on their hosted checkout
-- **Tax calculation** — handled by Shopify
-- **Shipping rates** — configured in Shopify admin, shown at checkout
-- **Fraud protection** — Shopify built-in
-
----
-
-## Deployment Checklist
-
-Before going live, verify these in Shopify Admin (not code changes):
-
-- [ ] Shopify Payments activated and bank account connected
+- [ ] Shopify Payments activated + bank connected
 - [ ] Shipping zones and rates configured
 - [ ] Tax settings correct for your region
-- [ ] `SHOPIFY_STORE_DOMAIN` and `SHOPIFY_STOREFRONT_ACCESS_TOKEN` env vars set in production
-- [ ] `SESSION_SECRET` set in production environment
-- [ ] Webhook endpoint registered: `https://yourdomain.com/webhooks/orders/create`
-- [ ] Custom domain pointed to deployment (Oxygen / Vercel / Cloudflare)
-- [ ] Cart `checkoutUrl` points to correct Shopify store (verify with a test add-to-cart)
+- [ ] `SHOPIFY_STORE_DOMAIN` + `SHOPIFY_STOREFRONT_ACCESS_TOKEN` in production env
+- [ ] `SESSION_SECRET` set in production env
+- [ ] Webhook registered: `POST https://yourdomain.com/webhooks/orders/create`
+- [ ] Custom domain pointed to deployment
+- [ ] Test a full add-to-cart → checkout cycle on production before going live
 
 ---
 
-## Key Files Reference
+## Key files
 
 | File | Purpose |
 |------|---------|
-| `app/hooks/useCartStore.ts` | Cart drawer open/close state |
-| `app/components/CartMain.tsx` | Cart item list (drawer + page) |
-| `app/components/CartLineItem.tsx` | Individual line item with qty controls |
+| `app/components/CartMain.tsx` | Cart item list |
+| `app/components/CartLineItem.tsx` | Line item: image, qty, remove |
 | `app/components/CartSummary.tsx` | Totals, discount codes, checkout button |
-| `app/routes/($locale).cart.tsx` | All cart mutations (server-side) |
-| `app/routes/($locale).cart.$lines.tsx` | Quick cart creation + checkout redirect |
-| `app/routes/($locale).products.$handle.tsx` | Product page with variant selection |
-| `app/components/ProductForm.tsx` | Variant picker + Add to Cart button |
+| `app/components/PageLayout.tsx` | Cart drawer (GSAP open/close) |
+| `app/hooks/useCartStore.ts` | Drawer open/close state |
+| `app/routes/($locale).cart.tsx` | All cart mutations server-side |
 | `app/routes/webhooks.orders.create.tsx` | Order webhook → GHL CRM sync |
 | `app/lib/fragments.ts` | Cart GraphQL fragment (includes `checkoutUrl`) |

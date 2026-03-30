@@ -1,178 +1,112 @@
 ---
-title: Compare Products — Implementation Status
-updated: 2026-03-30
+title: Compare Products — March 31  Early Day status
+updated: 2026-03-31
 ---
 
-# Compare Products — What's Left to Build
+# Compare Products — Honest Status
 
-## TL;DR
+## TL;DR: The compare feature is a dead end right now.
 
-The foundations exist: a working state store, animated CompareBar UI, and toggle buttons on product cards. What's missing is the actual compare page, the AppleSlider button wiring, and localStorage persistence.
-
----
-
-## What Already Exists
-
-| Area | Status | File |
-|------|--------|------|
-| Compare store (max 3 products) | ✅ | `app/hooks/useCompareStore.ts` |
-| CompareBar (floating bottom widget) | ✅ | `app/components/catalog/CompareBar.tsx` |
-| Toggle button on collection cards | ✅ | `app/components/ProductItem.tsx` |
-| Quick Compare button in AppleSlider | ⚠️ UI only | `app/components/sliders/AppleSlider.tsx` |
-| CompareBar wired into PageLayout | ✅ | `app/components/PageLayout.tsx` |
-| `deriveSpecs()` for badge/tag parsing | ✅ | `app/lib/productUtils.ts` |
+The store, the animated bar, and the buttons all exist and look great. But clicking "Compare" takes the user to a **404**. The AppleSlider compare button does literally nothing except `console.log`. No one can actually compare products today.
 
 ---
 
-## What's Missing — Ordered by Dependency
+## What actually works
 
-### 1. Wire Up AppleSlider Quick Compare Button
-**File:** `app/components/sliders/AppleSlider.tsx` — lines ~118–149
+| Part | Status | Notes |
+|------|--------|-------|
+| `useCompareStore.ts` — state store | ✅ Works | Toggle, clear, isSelected, max 3 limit all correct |
+| `CompareBar.tsx` — floating bottom bar | ✅ Renders | Animations, thumbnails, dismiss button all work |
+| `ProductItem.tsx` — "Add to Compare" button | ✅ Works | Fires `toggle()`, visual selected/unselected state correct |
+| `PageLayout.tsx` — CompareBar mounted globally | ✅ Works | Bar appears at the bottom of every page |
 
-The button renders and has the `GitCompareArrows` icon but the store hook is commented out and the `onClick` only calls `console.log`.
+---
 
-**What to do:**
+## What is broken
+
+### ❌ No `/compare` route — the destination is a 404
+
+`CompareBar.tsx` line 79 builds the link:
 ```tsx
-// Uncomment and implement:
-const { toggle: toggleCompare } = useCompareStore();
-
-// In the button onClick:
-toggleCompare({
-  id: product.id,
-  handle: product.handle,
-  title: product.title,
-  imageUrl: product.featuredImage?.url ?? null,
-  imageAlt: product.featuredImage?.altText ?? null,
-  price: product.priceRange.minVariantPrice.amount,
-  currencyCode: product.priceRange.minVariantPrice.currencyCode,
-});
+<Link to={`/compare?ids=${items.map((p) => p.id).join(',')}`}>
 ```
 
-**Effort:** ~10 minutes. Just uncomment, build the payload, call toggle.
+There is **no route file** at `app/routes/($locale).compare.tsx` or anywhere else. Every user who follows through will hit a 404.
 
----
+**To fix:** Create `app/routes/($locale).compare.tsx` with:
+1. A loader that reads `?ids=` from the URL and batch-fetches product data
+2. A comparison table UI
 
-### 2. Add localStorage Persistence to the Store
-**File:** `app/hooks/useCompareStore.ts`
+### ❌ AppleSlider "Compare" button does nothing
 
-Currently the compare list is lost on every page refresh. This is a poor UX — users build a comparison, navigate to a product page, and lose their selection.
-
-**What to do:** Initialise the store from `localStorage` and write back on every change:
-```ts
-// On init
-const stored = localStorage.getItem('synergy_compare');
-let state: CompareProduct[] = stored ? JSON.parse(stored) : [];
-
-// After every toggle/clear
-localStorage.setItem('synergy_compare', JSON.stringify(state));
+`app/components/sliders/AppleSlider.tsx` — `CompareButton` component:
+```tsx
+onClick={(e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  console.log('Compare triggered for:', handle); // ← that's it
+}}
 ```
 
-**Effort:** ~20 minutes.
+The `useCompareStore` hook is imported in the file but never called inside `CompareButton`. Clicking this button has zero effect on the compare store or the bar.
+
+**To fix:** Wire the hook and build the payload (10 minutes of work):
+```tsx
+const { toggle } = useCompareStore();
+// onClick:
+toggle({ id: product.id, handle, title, imageUrl, imageAlt, price, currencyCode });
+```
+
+### ❌ No localStorage persistence
+
+The compare selection is wiped on every page reload. A user adds 2 products, navigates to a product detail page, and their selections are gone when they come back.
+
+**To fix:** Read/write `localStorage` in `useCompareStore.ts` on init and every toggle.
+
+### ❌ No comparison UI built at all
+
+Even if the route existed, there is no component that shows a side-by-side product comparison. This is the bulk of the remaining work.
 
 ---
 
-### 3. Create the `/compare` Route
-**File to create:** `app/routes/($locale).compare.tsx`
+## What needs to be built, in order
 
-This is the critical missing piece. The CompareBar already links to `/compare?ids=id1,id2,id3` — that URL currently 404s.
+```
+1. Wire AppleSlider compare button to store        ~15 min   — easy fix
+2. Add localStorage persistence to store           ~20 min   — easy fix
+3. Create /compare route + loader                  ~1 hr     — fetches products by ID
+4. Build CompareTable component                    ~4-6 hrs  — the actual comparison UI
+```
 
-**What the route needs:**
-- Read `ids` from URL searchParams
-- Fetch full product data for each ID via Storefront API
-- Render a side-by-side comparison table
-
-**Loader sketch:**
+### Step 3 — Route sketch
 ```tsx
-export async function loader({ request, context }: LoaderFunctionArgs) {
+// app/routes/($locale).compare.tsx
+export async function loader({ request, context }) {
   const ids = new URL(request.url).searchParams.get('ids')?.split(',') ?? [];
-  // Fetch products by IDs using storefront.query()
-  // Return { products }
+  // batch fetch via storefront.query nodes(ids: [...])
+  return { products };
 }
 ```
 
-**GraphQL:** Use `nodes(ids: [...])` query to batch-fetch all products in one request.
+### Step 4 — Comparison data available without extra GraphQL work
+Using `deriveSpecs()` from `~/lib/productUtils` already gives:
+- Voltage, capacity (Ah), output amps, bank count
+- Bluetooth, Marine Grade, LiFePO4 flags
 
-**Effort:** Medium (~2–4 hours including UI).
-
----
-
-### 4. Build the Comparison Table UI
-**File to create:** `app/components/catalog/CompareTable.tsx` (used inside the compare route)
-
-The table should show products as columns, attributes as rows.
-
-**Suggested rows using data already available:**
-
-| Row | Data source |
-|-----|------------|
-| Product image | `featuredImage` |
-| Title | `title` |
-| Price | `priceRange.minVariantPrice` |
-| Availability | `variants.nodes[0].availableForSale` |
-| Specs/tags | `deriveSpecs(title, tags)` from `productUtils` |
-| Description | `description` (plain text, truncated) |
-| Vendor | `vendor` |
-| Add to Cart | Direct CTA per column |
-
-**What's not available without metafields:**
-- Weight / dimensions
-- Exact capacity (Ah) beyond what `deriveSpecs` regex extracts from title/tags
+What is NOT available without Shopify metafield setup:
+- Exact weight / dimensions
 - Warranty details
 - Certifications
 
-**Effort:** Medium (~3–5 hours for a polished table).
-
 ---
 
-### 5. Extend Product Data for Richer Comparisons (Optional)
-**File:** `app/lib/fragments.ts` — add to `PRODUCT_ITEM_FRAGMENT`
+## Key files
 
-Currently the fragment used by sliders/cards only fetches: `id, handle, title, tags, featuredImage, priceRange, variants(first:1)`.
-
-To show vendor and description on the compare page, add:
-```graphql
-vendor
-description
-```
-
-For truly detailed specs (battery chemistry, BMS specs, weight, etc.), you'd need Shopify metafields:
-```graphql
-metafields(identifiers: [
-  { namespace: "specs", key: "capacity_ah" },
-  { namespace: "specs", key: "weight_kg" },
-  { namespace: "specs", key: "warranty_years" }
-]) {
-  key
-  value
-}
-```
-This requires setting up metafield definitions in Shopify Admin first.
-
-**Effort:** Low for vendor/description. High for metafields (requires Shopify Admin setup + query changes).
-
----
-
-## Implementation Order
-
-```
-1. Wire AppleSlider button      (~10 min)  — low effort, visible fix
-2. localStorage persistence     (~20 min)  — prevents UX frustration
-3. /compare route + loader      (~1 hr)    — makes CompareBar functional
-4. CompareTable component       (~3-5 hrs) — the actual compare experience
-5. Extend product fragment      (~30 min)  — richer data once table exists
-6. Metafields (optional)        (varies)   — only if detailed specs needed
-```
-
----
-
-## Key Files Reference
-
-| File | Purpose |
-|------|---------|
-| `app/hooks/useCompareStore.ts` | State store — toggle, clear, isSelected |
-| `app/components/catalog/CompareBar.tsx` | Floating bottom bar, links to `/compare` |
-| `app/components/ProductItem.tsx` | Toggle button on collection grid cards |
-| `app/components/sliders/AppleSlider.tsx` | Quick Compare button (needs wiring) |
-| `app/components/PageLayout.tsx` | Mounts CompareBar globally |
-| `app/lib/productUtils.ts` | `deriveSpecs()` — reuse this in compare table |
-| `app/lib/fragments.ts` | GraphQL fragments — extend for compare data |
+| File | Status | Purpose |
+|------|--------|---------|
+| `app/hooks/useCompareStore.ts` | ✅ Works | State — needs localStorage added |
+| `app/components/catalog/CompareBar.tsx` | ✅ Renders | Links to non-existent route |
+| `app/components/ProductItem.tsx` | ✅ Works | Toggle button wired correctly |
+| `app/components/sliders/AppleSlider.tsx` | ❌ Broken | Button only logs, store never called |
+| `app/routes/($locale).compare.tsx` | ❌ Missing | Doesn't exist — must be created |
+| `app/components/catalog/CompareTable.tsx` | ❌ Missing | Doesn't exist — must be created |

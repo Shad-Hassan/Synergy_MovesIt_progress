@@ -593,15 +593,15 @@
         <div class="card">
           <div class="card-icon">📦</div>
           <div class="card-title">Order History</div>
-          <div class="card-desc">Logged-in customers can view all their past orders. Orders also sync to CRM automatically.</div>
-          <div class="badge badge-green">Live</div>
+          <div class="card-desc">Works via Shopify Kit scaffolding — but it's completely unstyled. Doesn't match the dark design system at all. Functional, not pretty.</div>
+          <div class="badge badge-yellow">Unstyled</div>
         </div>
       </div>
     </div>
 
     <!-- GAPS -->
     <div class="section">
-      <div class="section-label">Nice-to-haves (not blockers)</div>
+      <div class="section-label">What's not done yet</div>
 
       <div class="gap-card">
         <div class="gap-header">
@@ -627,12 +627,12 @@
 
       <div class="gap-card">
         <div class="gap-header">
-          <span class="gap-priority priority-yellow">Nice to have</span>
-          <div class="gap-title">Live Order Tracking</div>
-          <div class="gap-effort">⏱ Low effort</div>
+          <span class="gap-priority priority-yellow">Pending</span>
+          <div class="gap-title">Account / Login UI — Unstyled</div>
+          <div class="gap-effort">⏱ Medium effort</div>
         </div>
         <div class="gap-body">
-          Customers can see order history but not a live "your order is packed / shipped / out for delivery" status. The data is already there — it just needs to be surfaced more clearly on the order detail page.
+          The login, account, and address pages are Shopify Kit scaffolding — they <strong>work</strong> but look nothing like the rest of the site. Plain markup, no dark theme, no custom styling. Not broken, but it's a jarring experience if a customer hits these pages.
         </div>
       </div>
     </div>
@@ -656,62 +656,71 @@
   <!-- ========== TAB: COMPARE ========== -->
   <div id="tab-compare" class="tab-panel">
 
+    <!-- HONEST STATUS BANNER -->
+    <div class="status-banner" style="border-color: rgba(255,71,87,0.3); background: linear-gradient(135deg, rgba(255,71,87,0.08) 0%, rgba(255,71,87,0.02) 100%); margin-bottom: 36px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--red);flex-shrink:0;box-shadow:0 0 24px rgba(255,71,87,0.4);display:flex;align-items:center;justify-content:center;font-size:22px;">🚧</div>
+      <div class="status-banner-text">
+        <h2 style="color:var(--red);">Compare is a dead end right now.</h2>
+        <p>The UI looks great but clicking "Compare" sends users to a <strong style="color:var(--text)">404</strong>. The slider button does literally nothing. No one can actually compare products today — this feature needs to be built out before it goes live.</p>
+      </div>
+    </div>
+
     <!-- STATUS GRID -->
     <div class="section">
-      <div class="section-label">What's already built</div>
+      <div class="section-label">What's actually built vs what just looks built</div>
       <div class="grid-2">
         <div class="card">
           <div class="card-icon">💾</div>
           <div class="card-title">Compare Store</div>
-          <div class="card-desc">The logic to add/remove products from a compare list (max 3) is fully working in the background.</div>
-          <div class="badge badge-green">Done</div>
+          <div class="card-desc">The logic to add/remove products from a compare list (max 3) is fully working in the background. Toggle, clear, selected state — all correct.</div>
+          <div class="badge badge-green">Works</div>
         </div>
         <div class="card">
           <div class="card-icon">📊</div>
           <div class="card-title">Compare Bar</div>
-          <div class="card-desc">The floating bar at the bottom of the screen that shows selected products — fully built and animated.</div>
-          <div class="badge badge-green">Done</div>
+          <div class="card-desc">Renders beautifully at the bottom of every page. But the "Compare" button links to <code style="color:var(--red);font-size:10px">/compare</code> which is a 404. Looks done, isn't done.</div>
+          <div class="badge badge-yellow">Links to 404</div>
         </div>
         <div class="card">
           <div class="card-icon">🃏</div>
           <div class="card-title">Toggle on Product Cards</div>
-          <div class="card-desc">The "Add to Compare" button on collection grid cards is wired up and working.</div>
-          <div class="badge badge-green">Done</div>
+          <div class="card-desc">The "Add to Compare" button on collection grid cards is wired up and working correctly.</div>
+          <div class="badge badge-green">Works</div>
         </div>
         <div class="card">
           <div class="card-icon">🎠</div>
           <div class="card-title">Slider Compare Button</div>
-          <div class="card-desc">The button exists in the product slider — it just needs 10 minutes of wiring to actually work.</div>
-          <div class="badge badge-yellow">Almost</div>
+          <div class="card-desc">The button renders and has an icon. Clicking it does <strong>nothing</strong> — it literally only runs a <code style="color:var(--red);font-size:10px">console.log</code>. The store is never called.</div>
+          <div class="badge" style="background:rgba(255,71,87,0.1);color:var(--red);">❌ Broken</div>
         </div>
       </div>
     </div>
 
     <!-- WHAT'S LEFT -->
     <div class="section">
-      <div class="section-label">What's left — in order of priority</div>
+      <div class="section-label">What needs to be built — in order</div>
       <div class="step-list">
         <div class="step-item">
           <div class="step-num">01</div>
           <div class="step-content">
             <div class="step-title">Wire up the slider button</div>
-            <div class="step-desc">The button renders but doesn't do anything yet. Connecting it to the compare store is straightforward.</div>
+            <div class="step-desc">Connect the existing button to the compare store. It has the hook imported — just not called. Straightforward fix.</div>
           </div>
-          <div class="step-time">~10 min</div>
+          <div class="step-time">~15 min</div>
         </div>
         <div class="step-item">
           <div class="step-num">02</div>
           <div class="step-content">
             <div class="step-title">Remember selections on page refresh</div>
-            <div class="step-desc">Right now, if you navigate away, your compare list disappears. We need to save it to the browser.</div>
+            <div class="step-desc">Right now your compare list disappears the moment you navigate away. Needs to be saved to the browser so it survives page changes.</div>
           </div>
           <div class="step-time">~20 min</div>
         </div>
         <div class="step-item">
           <div class="step-num">03</div>
           <div class="step-content">
-            <div class="step-title">Build the /compare page (route)</div>
-            <div class="step-desc">The compare bar already links to a page — it just 404s right now. This page needs to be created.</div>
+            <div class="step-title">Build the /compare page — fixes the 404</div>
+            <div class="step-desc">The compare bar already links there. This page needs to be created: read the product IDs from the URL, fetch their data, hand off to the table.</div>
           </div>
           <div class="step-time">~1 hr</div>
         </div>
@@ -719,15 +728,15 @@
           <div class="step-num">04</div>
           <div class="step-content">
             <div class="step-title">Build the side-by-side comparison table</div>
-            <div class="step-desc">The actual UI showing products as columns — image, price, specs, availability, and an Add to Cart button per column.</div>
+            <div class="step-desc">The actual UI — products as columns, specs as rows. Image, price, availability, specs from tags, and an Add to Cart per column.</div>
           </div>
-          <div class="step-time">~3–5 hrs</div>
+          <div class="step-time">~4–6 hrs</div>
         </div>
         <div class="step-item">
           <div class="step-num">05</div>
           <div class="step-content">
             <div class="step-title">Add vendor & description to product data</div>
-            <div class="step-desc">Minor data fetch expansion to show brand and description in the compare table.</div>
+            <div class="step-desc">Small GraphQL query expansion to pull brand and description into the compare table.</div>
           </div>
           <div class="step-time">~30 min</div>
         </div>
@@ -735,7 +744,7 @@
           <div class="step-num">06</div>
           <div class="step-content">
             <div class="step-title">Rich specs via Shopify metafields (optional)</div>
-            <div class="step-desc">Capacity, weight, warranty — these require setting up custom fields in Shopify Admin first, then fetching them.</div>
+            <div class="step-desc">Exact weight, warranty, certifications — needs custom fields set up in Shopify Admin first, then fetched. Skip for now unless specs are critical.</div>
           </div>
           <div class="step-time">Varies</div>
         </div>
@@ -747,7 +756,7 @@
       <div style="width:48px;height:48px;border-radius:50%;background:var(--blue);flex-shrink:0;box-shadow:0 0 24px rgba(79,138,255,0.5);display:flex;align-items:center;justify-content:center;font-size:22px;">⚡</div>
       <div class="status-banner-text">
         <h2 style="color:var(--blue);">~6–8 hrs to a fully working compare feature</h2>
-        <p>Steps 1–3 (~1.5 hrs) make it functional. Steps 4–5 (~4–5 hrs) make it polished. Metafields are optional and depend on how detailed the specs need to be.</p>
+        <p>Steps 1–3 (~1.5 hrs) fix the broken parts and make it functional. Step 4 (~4–6 hrs) is the main build. Metafields are optional — skip unless detailed specs are needed for launch.</p>
       </div>
     </div>
 
@@ -755,7 +764,7 @@
 
   <!-- FOOTER -->
   <div class="footer">
-    <span>Last updated 30 Mar 2026</span>
+    <span>Last updated 31 Mar 2026</span>
     <span style="color: var(--border)">——</span>
     <span>Questions? Ask the dev team.</span>
   </div>
