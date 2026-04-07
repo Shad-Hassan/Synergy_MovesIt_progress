@@ -557,114 +557,8 @@
       <p>Detailed report on color balance alignment with target market and brand storytelling. No more tabbing — direct sections on Color Decision, Cart & Checkout, Compare Button. <strong>This decision separates premium sites from low-effort ones — team alignment required before launch.</strong></p>
     </div>
   </div>
-
-  <!-- ========== SECTION: CART AND CHECKOUT ========== -->
-  <div class="section">
-    <div class="section-label">Cart and Checkout</div>
-
-    <div class="banner banner-green">
-      <div class="banner-icon">✅</div>
-      <div class="banner-text">
-        <h2>Cart & checkout flow — fully polished.</h2>
-        <p>Last UI pass on the cart is done. All components, layout, content, and functionality are finalized. No more code changes expected here — just waiting on the colour revamp to land across the whole site.</p>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-label">What's locked and finalized</div>
-      <div class="grid-3">
-        <div class="card">
-          <div class="card-icon">🛒</div>
-          <div class="card-title">Add to Cart</div>
-          <div class="card-desc">Works from product pages, AppleSlider, and collection grid cards. Instant optimistic update, no reload.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">🎨</div>
-          <div class="card-title">Cart Drawer</div>
-          <div class="card-desc">GSAP-animated slide-in panel. Close via backdrop click, ESC key, or X button. UI polish done.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">🎛️</div>
-          <div class="card-title">Variant Picker</div>
-          <div class="card-desc">Colour swatches, size selection. Unavailable combos auto-disabled. URL-persisted on select.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">🏷️</div>
-          <div class="card-title">Discount & Gift Cards</div>
-          <div class="card-desc">Add and remove promo codes and gift cards in the cart summary. Works end-to-end.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">💳</div>
-          <div class="card-title">Checkout Redirect</div>
-          <div class="card-desc">Hands off to Shopify's hosted checkout. Tax, shipping, and payment are all handled there.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-        <div class="card">
-          <div class="card-icon">🔁</div>
-          <div class="card-title">CRM Order Sync</div>
-          <div class="card-desc">Every new order fires a webhook that syncs to GoHighLevel automatically. No manual work needed.</div>
-          <div class="badge badge-green">Finalized</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-label">What's still pending — post-launch polish</div>
-
-      <div class="blocker-card">
-        <div class="blocker-header">
-          <span class="blocker-tag tag-yellow">Post-launch</span>
-          <div class="blocker-title">Custom Thank-You Page</div>
-          <div class="blocker-effort">⏱ Medium</div>
-        </div>
-        <div class="blocker-body">
-          After payment, users land on Shopify's default confirmation screen — not our branded page. Order is confirmed fine, we just lose the branding moment. <strong>Not a launch blocker.</strong>
-        </div>
-      </div>
-
-      <div class="blocker-card">
-        <div class="blocker-header">
-          <span class="blocker-tag tag-yellow">Post-launch</span>
-          <div class="blocker-title">Branded Confirmation Email</div>
-          <div class="blocker-effort">⏱ Low</div>
-        </div>
-        <div class="blocker-body">
-          Shopify sends its plain default email. The webhook is already set up — we just need to attach a GHL email automation to it. <strong>Easy win after launch.</strong>
-        </div>
-      </div>
-
-      <div class="blocker-card">
-        <div class="blocker-header">
-          <span class="blocker-tag tag-yellow">Post-launch</span>
-          <div class="blocker-title">Account / Login UI — Unstyled</div>
-          <div class="blocker-effort">⏱ Medium</div>
-        </div>
-        <div class="blocker-body">
-          Login, account, and address pages are Shopify Kit scaffolding — functional but completely plain. <strong>No dark theme, no custom styles.</strong> Jarring if a customer hits these pages. Should be styled after the colour direction is locked.
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-label">Go-live checklist (Shopify Admin — no code changes)</div>
-      <ul class="checklist">
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shopify Payments activated</strong> — bank account connected and verified</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shipping zones & rates</strong> — all regions you're selling to configured</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Tax settings</strong> — correct for your market</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Production env vars</strong> — store domain, storefront token, session secret set on server</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Webhook registered</strong> — order sync pointed at live domain URL</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">Custom domain live</strong> — DNS pointed to deployment, SSL active</span></li>
-        <li><div class="check-box"></div><span><strong style="color:var(--text)">End-to-end test order</strong> — full add-to-cart → checkout cycle on production before announcing</span></li>
-      </ul>
-    </div>
-
-  </div>
-
-  <!-- ========== SECTION: COLOR DECISION ========== -->
+  
+<!-- ========== SECTION: COLOR DECISION ========== -->
   <div class="section">
     <div class="section-label">Color Decision — The Final Blocker</div>
 
@@ -846,7 +740,6 @@
     </div>
 
   </div>
-
   <!-- ========== SECTION: COMPARE BUTTON ========== -->
   <div class="section">
     <div class="section-label">Compare Button</div>
@@ -936,6 +829,115 @@
     </div>
 
   </div>
+
+  <!-- ========== SECTION: CART AND CHECKOUT ========== -->
+  <div class="section">
+    <div class="section-label">Cart and Checkout</div>
+
+    <div class="banner banner-green">
+      <div class="banner-icon">✅</div>
+      <div class="banner-text">
+        <h2>Cart & checkout flow — fully polished.</h2>
+        <p>Last UI pass on the cart is done. All components, layout, content, and functionality are finalized. No more code changes expected here — just waiting on the colour revamp to land across the whole site.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What's locked and finalized</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🛒</div>
+          <div class="card-title">Add to Cart</div>
+          <div class="card-desc">Works from product pages, AppleSlider, and collection grid cards. Instant optimistic update, no reload.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">Cart Drawer</div>
+          <div class="card-desc">GSAP-animated slide-in panel. Close via backdrop click, ESC key, or X button. UI polish done.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎛️</div>
+          <div class="card-title">Variant Picker</div>
+          <div class="card-desc">Colour swatches, size selection. Unavailable combos auto-disabled. URL-persisted on select.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <div class="card-title">Discount & Gift Cards</div>
+          <div class="card-desc">Add and remove promo codes and gift cards in the cart summary. Works end-to-end.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💳</div>
+          <div class="card-title">Checkout Redirect</div>
+          <div class="card-desc">Hands off to Shopify's hosted checkout. Tax, shipping, and payment are all handled there.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">CRM Order Sync</div>
+          <div class="card-desc">Every new order fires a webhook that syncs to GoHighLevel automatically. No manual work needed.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What's still pending — post-launch polish</div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Custom Thank-You Page</div>
+          <div class="blocker-effort">⏱ Medium</div>
+        </div>
+        <div class="blocker-body">
+          After payment, users land on Shopify's default confirmation screen — not our branded page. Order is confirmed fine, we just lose the branding moment. <strong>Not a launch blocker.</strong>
+        </div>
+      </div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Branded Confirmation Email</div>
+          <div class="blocker-effort">⏱ Low</div>
+        </div>
+        <div class="blocker-body">
+          Shopify sends its plain default email. The webhook is already set up — we just need to attach a GHL email automation to it. <strong>Easy win after launch.</strong>
+        </div>
+      </div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Account / Login UI — Unstyled</div>
+          <div class="blocker-effort">⏱ Medium</div>
+        </div>
+        <div class="blocker-body">
+          Login, account, and address pages are Shopify Kit scaffolding — functional but completely plain. <strong>No dark theme, no custom styles.</strong> Jarring if a customer hits these pages. Should be styled after the colour direction is locked.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Go-live checklist (Shopify Admin — no code changes)</div>
+      <ul class="checklist">
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shopify Payments activated</strong> — bank account connected and verified</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shipping zones & rates</strong> — all regions you're selling to configured</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Tax settings</strong> — correct for your market</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Production env vars</strong> — store domain, storefront token, session secret set on server</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Webhook registered</strong> — order sync pointed at live domain URL</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Custom domain live</strong> — DNS pointed to deployment, SSL active</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">End-to-end test order</strong> — full add-to-cart → checkout cycle on production before announcing</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  
+  
 
   <!-- FOOTER -->
   <div class="footer">
