@@ -355,6 +355,87 @@
   .verdict-discuss  { background: rgba(245,196,0,0.1);  color: var(--yellow); border: 1px solid rgba(245,196,0,0.2);  }
   .verdict-pending  { background: rgba(255,122,48,0.1); color: var(--orange); border: 1px solid rgba(255,122,48,0.2); }
 
+  /* ── OPTION HERO SECTIONS ── */
+  .option-hero {
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .option-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    opacity: 0.1;
+    z-index: -1;
+  }
+
+  .option-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .option-swatch-row {
+    display: flex;
+    gap: 8px;
+  }
+  .option-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+
+  .option-title {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0;
+    flex: 1;
+  }
+
+  .option-verdict {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .option-content {
+    max-width: 800px;
+  }
+
+  .option-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .option-think h4 {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .option-think ul {
+    padding-left: 20px;
+    font-size: 14px;
+  }
+
+  .option-think li {
+    margin-bottom: 8px;
+  }
+
   /* ── CHECKLIST ── */
   .checklist { list-style: none; margin-bottom: 40px; }
   .checklist li {
@@ -557,7 +638,7 @@
       <p>Detailed report on color balance alignment with target market and brand storytelling. No more tabbing — direct sections on Color Decision, Cart & Checkout, Compare Button. <strong>This decision separates premium sites from low-effort ones — team alignment required before launch.</strong></p>
     </div>
   </div>
-  
+
 <!-- ========== SECTION: COLOR DECISION ========== -->
   <div class="section">
     <div class="section-label">Color Decision — The Final Blocker</div>
@@ -585,53 +666,111 @@
 
     <div class="section">
       <div class="section-label">Options on the table — from today's team chat</div>
-      <div class="decision-grid">
 
-        <div class="decision-card">
-          <div class="swatch-row">
-            <div class="swatch" style="background:#0a0a1a;"></div>
-            <div class="swatch" style="background:#0d2b6e;"></div>
-            <div class="swatch" style="background:#ff7a30;"></div>
+      <!-- HERO OPTION 1: Dark Blue + Orange -->
+      <div class="option-hero" style="background: linear-gradient(135deg, #0a0a1a 0%, #0d2b6e 100%); color: white; border: 2px solid #ff7a30; margin-bottom: 32px;">
+        <div class="option-header">
+          <div class="option-swatch-row">
+            <div class="option-swatch" style="background:#0a0a1a;"></div>
+            <div class="option-swatch" style="background:#0d2b6e;"></div>
+            <div class="option-swatch" style="background:#ff7a30;"></div>
           </div>
-          <div class="decision-name">Dark Blue + Orange</div>
-          <div class="decision-desc">Current direction. Built around the "Abyss" brand story — energy in harsh ocean zones. Deep, premium, technical. Strong Gen-Z appeal in dark mode.</div>
-          <div class="verdict verdict-live">◉ Current</div>
+          <h3 class="option-title" style="color: #ff7a30;">Dark Blue + Orange</h3>
+          <div class="option-verdict" style="background: rgba(0,232,122,0.2); color: #00e87a; border: 1px solid #00e87a;">◉ Current Direction</div>
         </div>
-
-        <div class="decision-card">
-          <div class="swatch-row">
-            <div class="swatch" style="background:#f5f5f7;"></div>
-            <div class="swatch" style="background:#0d2b6e;"></div>
-            <div class="swatch" style="background:#ff7a30;"></div>
+        <div class="option-content">
+          <p class="option-desc" style="color: #e8e8f0;">
+            <strong style="color: #ff7a30;">Built for the Abyss brand story:</strong> Energy flowing through harsh ocean depths. This palette screams premium tech — deep, mysterious, powerful. Gen-Z will love the dark mode vibes, feeling like they're part of an elite club of deep-sea explorers.
+          </p>
+          <div class="option-think">
+            <h4 style="color: #4f8aff;">🤔 Think About It:</h4>
+            <ul style="color: #e8e8f0; line-height: 1.8;">
+              <li>Does this capture the "infinite power in extreme conditions" narrative?</li>
+              <li>Will customers feel the premium depth when they see this on their screens?</li>
+              <li>Is dark mode the future for our target demographic?</li>
+            </ul>
           </div>
-          <div class="decision-name">White + Dark Blue (Apple-style)</div>
-          <div class="decision-desc">Apple AirPods 3 influence. White dominant, dark blue as accent, orange as secondary CTA. Premium, clean, broader mass appeal. Needs logo colour update too.</div>
-          <div class="verdict verdict-discuss">⬡ Being Discussed</div>
         </div>
-
-        <div class="decision-card">
-          <div class="swatch-row">
-            <div class="swatch" style="background:#f5f5f7;"></div>
-            <div class="swatch" style="background:#0a0a1a;"></div>
-            <div class="swatch" style="background:#ff7a30;"></div>
-          </div>
-          <div class="decision-name">Light / Dark Mode Toggle</div>
-          <div class="decision-desc">Both themes served. Users pick. Also lets us track which mode is preferred (easy Node.js analytics). Best of both worlds — more dev work upfront, worth it long-term.</div>
-          <div class="verdict verdict-discuss">⬡ Being Discussed</div>
-        </div>
-
-        <div class="decision-card">
-          <div class="swatch-row">
-            <div class="swatch" style="background:#87ceeb;"></div>
-            <div class="swatch" style="background:#ffffff;"></div>
-            <div class="swatch" style="background:#0d2b6e;"></div>
-          </div>
-          <div class="decision-name">Sky Blue Theme</div>
-          <div class="decision-desc">Suggested briefly — but flagged as problematic. Doesn't align with the Abyss deep-ocean brand story and risks feeling generic/corporate rather than premium.</div>
-          <div class="verdict verdict-pending">✕ Unlikely</div>
-        </div>
-
       </div>
+
+      <!-- HERO OPTION 2: White + Dark Blue (Apple-style) -->
+      <div class="option-hero" style="background: linear-gradient(135deg, #f5f5f7 0%, #ffffff 100%); color: #0a0a1a; border: 2px solid #0d2b6e; margin-bottom: 32px;">
+        <div class="option-header">
+          <div class="option-swatch-row">
+            <div class="option-swatch" style="background:#f5f5f7;"></div>
+            <div class="option-swatch" style="background:#0d2b6e;"></div>
+            <div class="option-swatch" style="background:#ff7a30;"></div>
+          </div>
+          <h3 class="option-title" style="color: #0d2b6e;">White + Dark Blue (Apple-style)</h3>
+          <div class="option-verdict" style="background: rgba(245,196,0,0.2); color: #f5c400; border: 1px solid #f5c400;">⬡ Being Discussed</div>
+        </div>
+        <div class="option-content">
+          <p class="option-desc" style="color: #0a0a1a;">
+            <strong style="color: #0d2b6e;">Apple AirPods 3 inspiration:</strong> Clean, minimalist white dominance with dark blue accents and orange CTAs. This is premium luxury — think high-end stores, luxury brands. Broader appeal across demographics, but requires logo redesign.
+          </p>
+          <div class="option-think">
+            <h4 style="color: #ff4757;">🤔 Think About It:</h4>
+            <ul style="color: #0a0a1a; line-height: 1.8;">
+              <li>Can we maintain the Abyss "deep ocean" feel with a white background?</li>
+              <li>Will this attract older, more affluent customers?</li>
+              <li>Are we ready for a complete logo and brand refresh?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO OPTION 3: Light / Dark Mode Toggle -->
+      <div class="option-hero" style="background: linear-gradient(135deg, #f5f5f7 0%, #0a0a1a 100%); color: white; border: 2px solid #ff7a30; margin-bottom: 32px;">
+        <div class="option-header">
+          <div class="option-swatch-row">
+            <div class="option-swatch" style="background:#f5f5f7;"></div>
+            <div class="option-swatch" style="background:#0a0a1a;"></div>
+            <div class="option-swatch" style="background:#ff7a30;"></div>
+          </div>
+          <h3 class="option-title" style="color: #4f8aff;">Light / Dark Mode Toggle</h3>
+          <div class="option-verdict" style="background: rgba(245,196,0,0.2); color: #f5c400; border: 1px solid #f5c400;">⬡ Being Discussed</div>
+        </div>
+        <div class="option-content">
+          <p class="option-desc" style="color: #e8e8f0;">
+            <strong style="color: #4f8aff;">The best of both worlds:</strong> Users choose their preference. We get real data on what our audience wants. More development work upfront, but positions us as user-centric and data-driven. Future-proof for evolving preferences.
+          </p>
+          <div class="option-think">
+            <h4 style="color: #00e87a;">🤔 Think About It:</h4>
+            <ul style="color: #e8e8f0; line-height: 1.8;">
+              <li>How much extra development time are we willing to invest?</li>
+              <li>Could this data help us understand our customers better?</li>
+              <li>Is this the premium, personalized experience Abyss deserves?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO OPTION 4: Sky Blue Theme -->
+      <div class="option-hero" style="background: linear-gradient(135deg, #87ceeb 0%, #ffffff 100%); color: #0a0a1a; border: 2px solid #0d2b6e; margin-bottom: 32px;">
+        <div class="option-header">
+          <div class="option-swatch-row">
+            <div class="option-swatch" style="background:#87ceeb;"></div>
+            <div class="option-swatch" style="background:#ffffff;"></div>
+            <div class="option-swatch" style="background:#0d2b6e;"></div>
+          </div>
+          <h3 class="option-title" style="color: #ff4757;">Sky Blue Theme</h3>
+          <div class="option-verdict" style="background: rgba(255,122,48,0.2); color: #ff7a30; border: 1px solid #ff7a30;">✕ Unlikely</div>
+        </div>
+        <div class="option-content">
+          <p class="option-desc" style="color: #0a0a1a;">
+            <strong style="color: #ff4757;">Briefly suggested, but problematic:</strong> Light, airy sky blue feels generic and corporate. Doesn't align with the deep-ocean Abyss narrative. Risks making premium batteries look like cheap consumer goods.
+          </p>
+          <div class="option-think">
+            <h4 style="color: #ff4757;">🤔 Think About It:</h4>
+            <ul style="color: #0a0a1a; line-height: 1.8;">
+              <li>Does this undermine our "extreme conditions" brand story?</li>
+              <li>Will customers associate sky blue with premium tech?</li>
+              <li>Are we willing to sacrifice brand uniqueness for familiarity?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="section">
