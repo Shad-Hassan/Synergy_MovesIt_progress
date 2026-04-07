@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dev Report — April 8, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: #2a2a38;
+    --green: #00e87a;
+    --yellow: #f5c400;
+    --orange: #ff7a30;
+    --red: #ff4757;
+    --blue: #4f8aff;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --font-head: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,138,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,138,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  /* ── HEADER ── */
+  .header { margin-bottom: 56px; animation: fadeUp 0.6s ease both; }
+
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before { content:''; width:24px; height:1px; background:var(--orange); display:inline-block; }
+
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(40px, 7vw, 78px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: normal; color: var(--orange); }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.8;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .progress-label {
+    font-family: var(--font-head);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .progress-pct {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--orange);
+  }
+
+  .progress-track {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 88%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--green) 0%, var(--orange) 100%);
+    animation: growBar 1.2s 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes growBar { from { width: 0; } to { width: 88%; } }
+
+  .progress-note {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px;
+    width: fit-content;
+  }
+
+  .tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 22px;
+    border-radius: 9px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ── BANNER ── */
+  .banner {
+    border-radius: 16px;
+    padding: 26px 30px;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+  }
+  .banner-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .banner-text h2 {
+    font-family: var(--font-head);
+    font-size: 19px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  .banner-text p { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+  .banner-green { background: linear-gradient(135deg, rgba(0,232,122,0.08), rgba(0,232,122,0.02)); border: 1px solid rgba(0,232,122,0.22); }
+  .banner-green .banner-icon { background: var(--green); box-shadow: 0 0 20px rgba(0,232,122,0.45); animation: glow-green 2s infinite; }
+  .banner-green h2 { color: var(--green); }
+
+  .banner-orange { background: linear-gradient(135deg, rgba(255,122,48,0.08), rgba(255,122,48,0.02)); border: 1px solid rgba(255,122,48,0.22); }
+  .banner-orange .banner-icon { background: var(--orange); box-shadow: 0 0 20px rgba(255,122,48,0.45); }
+  .banner-orange h2 { color: var(--orange); }
+
+  .banner-blue { background: linear-gradient(135deg, rgba(79,138,255,0.08), rgba(79,138,255,0.02)); border: 1px solid rgba(79,138,255,0.22); }
+  .banner-blue .banner-icon { background: var(--blue); box-shadow: 0 0 20px rgba(79,138,255,0.4); }
+  .banner-blue h2 { color: var(--blue); }
+
+  @keyframes glow-green {
+    0%,100% { box-shadow: 0 0 20px rgba(0,232,122,0.45); }
+    50% { box-shadow: 0 0 36px rgba(0,232,122,0.75); }
+  }
+
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 40px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 40px; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: #3a3a50; transform: translateY(-2px); }
+  .card-icon { font-size: 20px; margin-bottom: 12px; }
+  .card-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .card-desc { font-size: 11px; color: var(--muted); line-height: 1.75; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 100px;
+    margin-top: 12px;
+    font-weight: 500;
+  }
+  .badge::before { content:''; width:6px; height:6px; border-radius:50%; }
+
+  .badge-green  { background: rgba(0,232,122,0.1);  color: var(--green);  } .badge-green::before  { background: var(--green); }
+  .badge-yellow { background: rgba(245,196,0,0.1);  color: var(--yellow); } .badge-yellow::before { background: var(--yellow); }
+  .badge-orange { background: rgba(255,122,48,0.1); color: var(--orange); } .badge-orange::before { background: var(--orange); }
+  .badge-red    { background: rgba(255,71,87,0.1);  color: var(--red);    } .badge-red::before    { background: var(--red); }
+
+  /* ── WHAT'S BLOCKING CARD ── */
+  .blocker-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .blocker-card:hover { border-color: #3a3a50; }
+  .blocker-header {
+    padding: 18px 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .blocker-tag {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 100px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .tag-orange { background: rgba(255,122,48,0.12); color: var(--orange); border: 1px solid rgba(255,122,48,0.2); }
+  .tag-yellow { background: rgba(245,196,0,0.12); color: var(--yellow); border: 1px solid rgba(245,196,0,0.2); }
+
+  .blocker-title { font-family: var(--font-head); font-size: 15px; font-weight: 700; flex: 1; line-height: 1.3; }
+  .blocker-effort { font-size: 10px; color: var(--muted); flex-shrink: 0; padding-top: 3px; }
+  .blocker-body {
+    padding: 16px 22px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    border-top: 1px solid var(--border);
+  }
+  .blocker-body strong { color: var(--text); }
+
+  /* ── DECISION CARDS (color palette) ── */
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .decision-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .decision-card:hover { border-color: #3a3a50; transform: translateY(-2px); }
+
+  .swatch-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.08);
+  }
+
+  .decision-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .decision-desc { font-size: 11px; color: var(--muted); line-height: 1.7; }
+
+  .verdict {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 14px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .verdict-live     { background: rgba(0,232,122,0.1);  color: var(--green);  border: 1px solid rgba(0,232,122,0.2);  }
+  .verdict-discuss  { background: rgba(245,196,0,0.1);  color: var(--yellow); border: 1px solid rgba(245,196,0,0.2);  }
+  .verdict-pending  { background: rgba(255,122,48,0.1); color: var(--orange); border: 1px solid rgba(255,122,48,0.2); }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; margin-bottom: 40px; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(42,42,56,0.5);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── CHAT QUOTE ── */
+  .chat-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 0 12px 12px 0;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+  }
+  .chat-who {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .chat-msg { font-size: 12px; color: var(--text); line-height: 1.75; }
+
+  /* ── STEP LIST ── */
+  .step-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 40px; }
+  .step-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .step-item:hover { border-color: #3a3a50; transform: translateX(4px); }
+  .step-num { font-family: var(--font-head); font-size: 26px; font-weight: 800; color: var(--border); width: 38px; flex-shrink: 0; }
+  .step-content { flex: 1; }
+  .step-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .step-desc { font-size: 11px; color: var(--muted); }
+  .step-time {
+    font-size: 10px;
+    padding: 4px 12px;
+    border-radius: 100px;
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeUp 0.55s ease both; }
+  .section:nth-child(2) { animation-delay: 0.08s; }
+  .section:nth-child(3) { animation-delay: 0.16s; }
+  .section:nth-child(4) { animation-delay: 0.24s; }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .container { padding: 36px 16px 80px; }
+    .banner { flex-direction: column; }
+    .tabs { width: 100%; }
+    .tab { flex: 1; text-align: center; }
+  }
+
+  /* NAVBAR STYLES */
+  .mobile-nav {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: var(--surface);
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    z-index: 10;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 16rem;
+    background: var(--surface);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 10;
+  }
+
+  .radio-button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    background: var(--surface2);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+    font-family: var(--font-mono);
+  }
+
+  .radio-button:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  input[type="radio"] {
+    display: none;
+  }
+
+  input[type="radio"]:checked + .radio-button {
+    background: var(--blue);
+    color: white;
+    border-color: var(--blue);
+  }
+
+  @media (max-width: 1279px) {
+    .sidebar { display: none; }
+    .mobile-nav { display: flex; }
+    .container { margin-left: 0; }
+  }
+
+  @media (min-width: 1280px) {
+    .mobile-nav { display: none; }
+    .sidebar { display: flex; }
+    .container { margin-left: 16rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="mobile-nav">
+  <input type="radio" id="march" name="audit">
+  <label for="march" class="radio-button">March 30 Audit</label>
+  <input type="radio" id="april" name="audit" checked>
+  <label for="april" class="radio-button">April 8 Audit</label>
+</nav>
+
+<aside class="sidebar">
+  <input type="radio" id="march-side" name="audit">
+  <label for="march-side" class="radio-button">March 30 Audit</label>
+  <input type="radio" id="april-side" name="audit" checked>
+  <label for="april-side" class="radio-button">April 8 Audit</label>
+</aside>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow">Dev Report · April 8, 2026</div>
+    <h1>Almost<br/><em>there.</em></h1>
+    <p class="header-sub">Cart is polished and production-ready. One last thing before we ship — the team needs to align on the final colour palette before the UI revamp goes in. Everything else: done.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-meta">
+      <span class="progress-label">Overall deployment readiness</span>
+      <span class="progress-pct">88%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <div class="progress-note">Blocking: colour palette decision → final UI pass → deploy. Compare feature is a separate track, not a launch blocker.</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('cart')">🛒 Cart & Checkout</button>
+    <button class="tab" onclick="switchTab('palette')">🎨 Colour Decision</button>
+    <button class="tab" onclick="switchTab('compare')">⚖️ Compare</button>
+  </div>
+
+  <!-- ══════════════ TAB: CART ══════════════ -->
+  <div id="tab-cart" class="tab-panel active">
+
+    <div class="banner banner-green">
+      <div class="banner-icon">✅</div>
+      <div class="banner-text">
+        <h2>Cart & checkout flow — fully polished.</h2>
+        <p>Last UI pass on the cart is done. All components, layout, content, and functionality are finalized. No more code changes expected here — just waiting on the colour revamp to land across the whole site.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What's locked and finalized</div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">🛒</div>
+          <div class="card-title">Add to Cart</div>
+          <div class="card-desc">Works from product pages, AppleSlider, and collection grid cards. Instant optimistic update, no reload.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎨</div>
+          <div class="card-title">Cart Drawer</div>
+          <div class="card-desc">GSAP-animated slide-in panel. Close via backdrop click, ESC key, or X button. UI polish done.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎛️</div>
+          <div class="card-title">Variant Picker</div>
+          <div class="card-desc">Colour swatches, size selection. Unavailable combos auto-disabled. URL-persisted on select.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🏷️</div>
+          <div class="card-title">Discount & Gift Cards</div>
+          <div class="card-desc">Add and remove promo codes and gift cards in the cart summary. Works end-to-end.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">💳</div>
+          <div class="card-title">Checkout Redirect</div>
+          <div class="card-desc">Hands off to Shopify's hosted checkout. Tax, shipping, and payment are all handled there.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔁</div>
+          <div class="card-title">CRM Order Sync</div>
+          <div class="card-desc">Every new order fires a webhook that syncs to GoHighLevel automatically. No manual work needed.</div>
+          <div class="badge badge-green">Finalized</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What's still pending — post-launch polish</div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Custom Thank-You Page</div>
+          <div class="blocker-effort">⏱ Medium</div>
+        </div>
+        <div class="blocker-body">
+          After payment, users land on Shopify's default confirmation screen — not our branded page. Order is confirmed fine, we just lose the branding moment. <strong>Not a launch blocker.</strong>
+        </div>
+      </div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Branded Confirmation Email</div>
+          <div class="blocker-effort">⏱ Low</div>
+        </div>
+        <div class="blocker-body">
+          Shopify sends its plain default email. The webhook is already set up — we just need to attach a GHL email automation to it. <strong>Easy win after launch.</strong>
+        </div>
+      </div>
+
+      <div class="blocker-card">
+        <div class="blocker-header">
+          <span class="blocker-tag tag-yellow">Post-launch</span>
+          <div class="blocker-title">Account / Login UI — Unstyled</div>
+          <div class="blocker-effort">⏱ Medium</div>
+        </div>
+        <div class="blocker-body">
+          Login, account, and address pages are Shopify Kit scaffolding — functional but completely plain. <strong>No dark theme, no custom styles.</strong> Jarring if a customer hits these pages. Should be styled after the colour direction is locked.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Go-live checklist (Shopify Admin — no code changes)</div>
+      <ul class="checklist">
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shopify Payments activated</strong> — bank account connected and verified</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Shipping zones & rates</strong> — all regions you're selling to configured</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Tax settings</strong> — correct for your market</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Production env vars</strong> — store domain, storefront token, session secret set on server</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Webhook registered</strong> — order sync pointed at live domain URL</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">Custom domain live</strong> — DNS pointed to deployment, SSL active</span></li>
+        <li><div class="check-box"></div><span><strong style="color:var(--text)">End-to-end test order</strong> — full add-to-cart → checkout cycle on production before announcing</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ TAB: PALETTE ══════════════ -->
+  <div id="tab-palette" class="tab-panel">
+
+    <div class="banner banner-orange">
+      <div class="banner-icon">🎨</div>
+      <div class="banner-text">
+        <h2>One decision is blocking the final UI pass.</h2>
+        <p>All layout, components, content, and functionality are done. The last thing before deployment is a team alignment on colour direction — then one final UI pass goes in and we ship.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Options on the table — from today's team chat</div>
+      <div class="decision-grid">
+
+        <div class="decision-card">
+          <div class="swatch-row">
+            <div class="swatch" style="background:#0a0a1a;"></div>
+            <div class="swatch" style="background:#0d2b6e;"></div>
+            <div class="swatch" style="background:#ff7a30;"></div>
+          </div>
+          <div class="decision-name">Dark Blue + Orange</div>
+          <div class="decision-desc">Current direction. Built around the "Abyss" brand story — energy in harsh ocean zones. Deep, premium, technical. Strong Gen-Z appeal in dark mode.</div>
+          <div class="verdict verdict-live">◉ Current</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="swatch-row">
+            <div class="swatch" style="background:#f5f5f7;"></div>
+            <div class="swatch" style="background:#0d2b6e;"></div>
+            <div class="swatch" style="background:#ff7a30;"></div>
+          </div>
+          <div class="decision-name">White + Dark Blue (Apple-style)</div>
+          <div class="decision-desc">Apple AirPods 3 influence. White dominant, dark blue as accent, orange as secondary CTA. Premium, clean, broader mass appeal. Needs logo colour update too.</div>
+          <div class="verdict verdict-discuss">⬡ Being Discussed</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="swatch-row">
+            <div class="swatch" style="background:#f5f5f7;"></div>
+            <div class="swatch" style="background:#0a0a1a;"></div>
+            <div class="swatch" style="background:#ff7a30;"></div>
+          </div>
+          <div class="decision-name">Light / Dark Mode Toggle</div>
+          <div class="decision-desc">Both themes served. Users pick. Also lets us track which mode is preferred (easy Node.js analytics). Best of both worlds — more dev work upfront, worth it long-term.</div>
+          <div class="verdict verdict-discuss">⬡ Being Discussed</div>
+        </div>
+
+        <div class="decision-card">
+          <div class="swatch-row">
+            <div class="swatch" style="background:#87ceeb;"></div>
+            <div class="swatch" style="background:#ffffff;"></div>
+            <div class="swatch" style="background:#0d2b6e;"></div>
+          </div>
+          <div class="decision-name">Sky Blue Theme</div>
+          <div class="decision-desc">Suggested briefly — but flagged as problematic. Doesn't align with the Abyss deep-ocean brand story and risks feeling generic/corporate rather than premium.</div>
+          <div class="verdict verdict-pending">✕ Unlikely</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Why this decision matters — from the team</div>
+      <div class="chat-block">
+        <div class="chat-who">Shad</div>
+        <div class="chat-msg">"Color balance must be aligned between your <strong style="color:var(--text)">TARGET MARKET</strong> × <strong style="color:var(--text)">BRAND STORYTELLING</strong>. This is the fine bridge that separates premium sites from low-effort ones."</div>
+      </div>
+      <div class="chat-block">
+        <div class="chat-who">Shad</div>
+        <div class="chat-msg">"Dark Blue was essentially for the Abyss batteries — energy flowing even in the harsh zones of the ocean. Color change in UI is as simple as changing clothes and matching pants. Your entire wardrobe and flat has been already constructed."</div>
+      </div>
+      <div class="chat-block">
+        <div class="chat-who">Shad</div>
+        <div class="chat-msg">"Gaining insight on your market demography would allow a data-driven approach to brand storytelling. Discussion on these branding decisions is very critical."</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What needs to happen next</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Team meeting — lock the colour direction</div>
+            <div class="step-desc">Harshpreet, Nasir, Shad all need to be in the same room. Demographic data should be on the table to make it data-driven, not just vibes.</div>
+          </div>
+          <div class="step-time">Pending meeting</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Final UI pass — apply new palette site-wide</div>
+            <div class="step-desc">Once direction is agreed, CSS variables get updated across the design system. Layout and components don't change — just colours and typography tweaks.</div>
+          </div>
+          <div class="step-time">~Few hrs</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Logo colour & typography update (if white theme chosen)</div>
+            <div class="step-desc">Switching to the white/Apple-style direction means the logo itself needs a colour and possibly type treatment update to match.</div>
+          </div>
+          <div class="step-time">Design call</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">Deploy</div>
+            <div class="step-desc">Everything else is ready. Once the UI pass is done, we go live.</div>
+          </div>
+          <div class="step-time">🚀</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══════════════ TAB: COMPARE ══════════════ -->
+  <div id="tab-compare" class="tab-panel">
+
+    <div class="banner" style="background:linear-gradient(135deg,rgba(255,71,87,0.08),rgba(255,71,87,0.02));border:1px solid rgba(255,71,87,0.25);">
+      <div class="banner-icon" style="background:var(--red);box-shadow:0 0 20px rgba(255,71,87,0.4);">🚧</div>
+      <div class="banner-text">
+        <h2 style="color:var(--red);">Compare is a dead end — not a launch blocker.</h2>
+        <p>The UI looks great but clicking "Compare" sends users to a <strong style="color:var(--text)">404</strong>. The slider button runs a <code style="color:var(--red);font-size:11px">console.log</code> and nothing else. This is a post-launch build — it doesn't hold up the cart/checkout deploy.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">What actually works vs what just looks built</div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-icon">💾</div>
+          <div class="card-title">Compare Store</div>
+          <div class="card-desc">Toggle, clear, max-3 limit, selected state — all correct in the background state store.</div>
+          <div class="badge badge-green">Works</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <div class="card-title">Compare Bar</div>
+          <div class="card-desc">Renders and animates beautifully at the bottom of every page. But the Compare button links to a route that doesn't exist yet.</div>
+          <div class="badge badge-orange">Links to 404</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🃏</div>
+          <div class="card-title">Toggle on Product Cards</div>
+          <div class="card-desc">The "Add to Compare" button on collection grid cards is wired up correctly and updates the store.</div>
+          <div class="badge badge-green">Works</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🎠</div>
+          <div class="card-title">Slider Compare Button</div>
+          <div class="card-desc">Button renders with the right icon. Clicking it runs a console.log and nothing else. The store hook is imported but never called.</div>
+          <div class="badge badge-red">❌ Broken</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Build order — when we pick this up post-launch</div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Wire the slider button to the store</div>
+            <div class="step-desc">Hook is already imported — just needs to be called with the product payload. Straightforward.</div>
+          </div>
+          <div class="step-time">~15 min</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Persist selections across page navigation</div>
+            <div class="step-desc">Compare list wipes on every reload. Needs localStorage read/write so it survives page changes.</div>
+          </div>
+          <div class="step-time">~20 min</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Create the /compare route — fix the 404</div>
+            <div class="step-desc">Read product IDs from the URL, batch-fetch via Storefront API, pass to the comparison table.</div>
+          </div>
+          <div class="step-time">~1 hr</div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">Build the side-by-side comparison table</div>
+            <div class="step-desc">Products as columns, specs as rows — image, price, availability, derived specs, Add to Cart per column.</div>
+          </div>
+          <div class="step-time">~4–6 hrs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner banner-blue" style="margin-top:8px;">
+      <div class="banner-icon">⚡</div>
+      <div class="banner-text">
+        <h2>~6–8 hrs total to a working compare feature</h2>
+        <p>Steps 1–3 fix all the broken parts in ~1.5 hrs. Step 4 is the main build. This is a clean post-launch sprint, not something that holds up going live.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>Dev Report — April 8, 2026</span>
+    <span>Layout ✅ · Content ✅ · Functionality ✅ · Colour TBD 🎨</span>
+  </div>
+
+</div>
+
+<script>
+  function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.currentTarget.classList.add('active');
+  }
+</script>
+
+<script>
+  document.querySelectorAll('input[name="audit"]').forEach(input => {
+    input.addEventListener('change', function() {
+      if (this.id === 'march' || this.id === 'march-side') {
+        window.location.href = 'project-status.html';
+      } else if (this.id === 'april' || this.id === 'april-side') {
+        window.location.href = 'color-Balance.html';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
